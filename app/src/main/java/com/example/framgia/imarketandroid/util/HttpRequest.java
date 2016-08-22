@@ -121,26 +121,6 @@ public class HttpRequest {
         });
     }
 
-    public void requestEventNocation() {
-        mApi = mRetrofit.create(IMarketApiEndPoint.class);
-        Call<Session> callEventNotification = mApi.eventNotification();
-        callEventNotification.enqueue(new Callback<Session>() {
-            @Override
-            public void onResponse(Call<Session> call, Response<Session> response) {
-                if (mListener != null) {
-                    mListener.onLoadDataSuccess(response.body());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Session> call, Throwable t) {
-                if (mListener != null) {
-                    mListener.onLoadDataFailure(t.getMessage());
-                }
-            }
-        });
-    }
-
     public interface OnLoadDataListener {
         void onLoadDataSuccess(Object object);
         void onLoadDataFailure(String message);

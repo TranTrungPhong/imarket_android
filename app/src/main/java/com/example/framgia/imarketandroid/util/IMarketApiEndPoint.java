@@ -15,9 +15,6 @@ import retrofit2.http.POST;
 public interface IMarketApiEndPoint {
     @GET("stores/1/categories")
     Call<CategoryList> loadCategories();
-    // TODO: 19/08/2016 change notification if have api
-    @GET("users/32")
-    Call<Session> eventNotification();
     @POST("sessions")
     Call<Session> login(@Body Session session);
     @POST("users")

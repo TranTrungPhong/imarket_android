@@ -29,6 +29,7 @@ public class DatabaseTable {
     private static final String DATABASE_NAME = "LIST_PRODUCTS";
     private static final String FTS_VIRTUAL_TABLE = "FTS";
     private static final int DATABASE_VERSION = 1;
+
     private final DatabaseOpenHelper mDatabaseOpenHelper;
 
     public DatabaseTable(Context context) {
@@ -38,14 +39,17 @@ public class DatabaseTable {
     public Cursor getProductMatches(String query, String[] columns) {
         String selection = COL_NAME_PRODUCT + " MATCH ?";
         String[] selectionArgs = new String[]{query + "*"};
+
         return query(selection, selectionArgs, columns);
     }
 
     private Cursor query(String selection, String[] selectionArgs, String[] columns) {
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
         builder.setTables(FTS_VIRTUAL_TABLE);
+
         Cursor cursor = builder.query(mDatabaseOpenHelper.getReadableDatabase(),
-            columns, selection, selectionArgs, null, null, null);
+                columns, selection, selectionArgs, null, null, null);
+
         if (cursor == null) {
             return null;
         } else if (!cursor.moveToFirst()) {
@@ -56,11 +60,12 @@ public class DatabaseTable {
     }
 
     private static class DatabaseOpenHelper extends SQLiteOpenHelper {
+
         private static final String FTS_TABLE_CREATE =
-            "CREATE VIRTUAL TABLE " + FTS_VIRTUAL_TABLE +
-                " USING fts3 (" +
-                COL_NAME_PRODUCT + ", " +
-                COL_PERCENTPROMOTION + ")";
+                "CREATE VIRTUAL TABLE " + FTS_VIRTUAL_TABLE +
+                        " USING fts3 (" +
+                        COL_NAME_PRODUCT + ", " +
+                        COL_PERCENTPROMOTION + ")";
         private final Context mHelperContext;
         private SQLiteDatabase mDatabase;
 
@@ -79,7 +84,7 @@ public class DatabaseTable {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-                + newVersion + ", which will destroy all old data");
+                    + newVersion + ", which will destroy all old data");
             db.execSQL("DROP TABLE IF EXISTS " + FTS_VIRTUAL_TABLE);
             onCreate(db);
         }
@@ -100,6 +105,7 @@ public class DatabaseTable {
             final Resources resources = mHelperContext.getResources();
             InputStream inputStream = resources.openRawResource(idRawRes);
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
             try {
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -119,6 +125,7 @@ public class DatabaseTable {
             ContentValues initialValues = new ContentValues();
             initialValues.put(COL_NAME_PRODUCT, name);
             initialValues.put(COL_PERCENTPROMOTION, percentPromotion);
+
             return mDatabase.insert(FTS_VIRTUAL_TABLE, null, initialValues);
         }
     }

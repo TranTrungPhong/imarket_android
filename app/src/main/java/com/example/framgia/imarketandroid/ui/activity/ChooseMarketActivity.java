@@ -29,8 +29,8 @@ import com.example.framgia.imarketandroid.models.Market;
 import com.example.framgia.imarketandroid.ui.adapter.RecyclerDrawerAdapter;
 import com.example.framgia.imarketandroid.ui.adapter.RecyclerMarketAdapter;
 import com.example.framgia.imarketandroid.ui.widget.LinearItemDecoration;
-import com.example.framgia.imarketandroid.util.NotificationUtil;
 import com.example.framgia.imarketandroid.util.OnRecyclerItemInteractListener;
+import com.example.framgia.imarketandroid.util.SharedPreferencesUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class ChooseMarketActivity extends AppCompatActivity implements
     SearchView.OnQueryTextListener, OnRecyclerItemInteractListener {
     private static final String MARKET_SUGGESTION = "marketName";
     private static final String[] SUGGESTIONS = new String[]{
-        "Belgium", "France", "Italy", "Germany", "Spain", "Viet Name"
+        "Belgium", "France", "Italy", "Germany", "Spain", "Viet Nam"
     };
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
@@ -99,7 +99,6 @@ public class ChooseMarketActivity extends AppCompatActivity implements
             displayViews,
             CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         mAdapter.setOnRecyclerItemInteractListener(this);
-        NotificationUtil.setAlarm(this);
     }
 
     @Override

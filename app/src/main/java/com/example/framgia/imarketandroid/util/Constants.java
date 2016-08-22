@@ -22,5 +22,4 @@ public class Constants {
     public static final String ID = "id";
     public static final String USERNAME = "username";
     public static final String FULLNAME = "fullname";
-    public static final String NAMESERVICE = "NotificationService";
 }
