@@ -303,4 +303,7 @@ public class FakeContainer {
         list.add("22/1/2011");
         return list;
     }
+
+    public static final String URL_BG_PROFILE = "https://uphinhnhanh.com/images/2016/09/16/background_profile7f2fa.png";
+
 }

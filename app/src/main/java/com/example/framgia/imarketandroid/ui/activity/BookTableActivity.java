@@ -15,16 +15,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.example.framgia.imarketandroid.R;
+import com.example.framgia.imarketandroid.data.FakeContainer;
 import com.example.framgia.imarketandroid.data.model.Session;
 import com.example.framgia.imarketandroid.data.model.Showcase;
 import com.example.framgia.imarketandroid.util.Constants;
 import com.example.framgia.imarketandroid.util.DialogShareUtil;
 import com.example.framgia.imarketandroid.util.SharedPreferencesUtil;
 import com.example.framgia.imarketandroid.util.ShowcaseGuideUtil;
+import com.example.framgia.imarketandroid.util.findpath.GlideUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,6 +60,7 @@ public class BookTableActivity extends Activity implements View.OnClickListener 
     private int mDay, mMonth, mYear, mHour, mMinute;
     private SharedPreferences mPreferences;
     private TextView mLogin;
+    private ImageView mImageViewRestaurantCover;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class BookTableActivity extends Activity implements View.OnClickListener 
         initView();
         mPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
         initGuide();
+        initImageByGlide();
     }
 
     private void initView() {
@@ -103,6 +108,7 @@ public class BookTableActivity extends Activity implements View.OnClickListener 
         mTextViewPhoneNumber.setOnClickListener(this);
         mLogin = (TextView) findViewById(R.id.login_other_booktable);
         mLogin.setOnClickListener(this);
+        mImageViewRestaurantCover = (ImageView)findViewById(R.id.image_restaurant);
     }
 
     @Override
@@ -345,4 +351,10 @@ public class BookTableActivity extends Activity implements View.OnClickListener 
         ShowcaseGuideUtil.mutilShowcase(BookTableActivity.this, Constants
             .SHOWCASE_ID_BOOK_TABLE, showList);
     }
+
+
+    private void initImageByGlide() {
+        GlideUtil.getImage(this,mImageViewRestaurantCover, FakeContainer.URL_BG_PROFILE);
+    }
+
 }
