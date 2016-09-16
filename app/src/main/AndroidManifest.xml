@@ -44,7 +44,10 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"/>
 
-        <activity android:name=".ui.activity.ChooseMarketActivity"/>
+        <activity android:name=".ui.activity.ChooseMarketActivity">
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </activity>
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
@@ -97,10 +100,6 @@
         <service android:name=".services.NotificationAlarmService"/>
 
         <activity android:name=".ui.activity.BookProductActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.activity.DialogActivity"
