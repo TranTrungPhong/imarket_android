@@ -47,6 +47,7 @@ public class ListProductsActivity extends AppCompatActivity implements SearchVie
         Intent intent = getIntent();
         if (intent != null)
             handleIntent(intent);
+        loadDataFromServer();
         initViews();
     }
 
@@ -155,5 +156,11 @@ public class ListProductsActivity extends AppCompatActivity implements SearchVie
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    private void loadDataFromServer() {
+
+    }
+
 
 }

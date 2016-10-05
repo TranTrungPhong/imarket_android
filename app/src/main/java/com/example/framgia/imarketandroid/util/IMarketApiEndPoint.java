@@ -1,6 +1,7 @@
 package com.example.framgia.imarketandroid.util;
 
 import com.example.framgia.imarketandroid.data.model.CategoryList;
+import com.example.framgia.imarketandroid.data.model.ListItemProduct;
 import com.example.framgia.imarketandroid.data.model.Session;
 import com.example.framgia.imarketandroid.data.model.Store;
 import com.example.framgia.imarketandroid.data.model.StoreTypeList;
