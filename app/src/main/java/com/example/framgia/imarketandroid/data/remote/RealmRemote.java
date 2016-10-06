@@ -151,7 +151,8 @@ public class RealmRemote {
 
     public static CustomMarker createCustomMarkerFromPoint(Point point) {
         Category category1 =
-                new Category(Integer.toString(point.getType()), point.getName());
+                new Category(Integer.toString(point.getType()), point.getName(), 1);
+        // 1 là store id, tam fake
         CustomMarker result = new CustomMarker(point.getId(), point.getLat(), point.getLng(),
                 Constants.DEMO_NUMBER,
                 category1);

@@ -1,6 +1,8 @@
 package com.example.framgia.imarketandroid.util;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by hoavt on 21/07/2016.
@@ -13,5 +15,9 @@ public class Flog {
         if (mShow) {
             Log.i(TAG, content + "");
         }
+    }
+
+    public static void toast(Context activity, int path) {
+        Toast.makeText(activity,path,Toast.LENGTH_SHORT).show();
     }
 }

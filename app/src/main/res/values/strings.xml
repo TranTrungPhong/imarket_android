@@ -263,4 +263,6 @@
     <string name="review_by">Review by</string>
     <string name="enter_title">Tiêu đề</string>
     <string name="timeout_dialog">Waring : Progress dialog time out !</string>
+    <string name="store_null">Stores null</string>
+    <string name="store_success">Stores not null</string>
 </resources>

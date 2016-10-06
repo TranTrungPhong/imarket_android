@@ -15,6 +15,8 @@ public class Category extends RealmObject {
     private String mId;
     @SerializedName("name")
     private String mName;
+    @SerializedName("store_id")
+    private int mStoreId;
 
     public Category() {
     }
@@ -35,8 +37,17 @@ public class Category extends RealmObject {
         mId = id;
     }
 
-    public Category(String id, String name) {
+    public Category(String id, String name, int storeId) {
         mId = id;
         mName = name;
+        mStoreId = storeId;
+    }
+
+    public int getStoreId() {
+        return mStoreId;
+    }
+
+    public void setStoreId(int storeId) {
+        mStoreId = storeId;
     }
 }

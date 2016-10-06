@@ -86,4 +86,5 @@ public class CategoryStallFragment extends Fragment implements
     public void onItemClick(View view, int position) {
         startActivity(new Intent(getContext(), ListProductsActivity.class));
     }
+
 }

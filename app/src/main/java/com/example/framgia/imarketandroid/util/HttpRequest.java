@@ -2,6 +2,8 @@ package com.example.framgia.imarketandroid.util;
 
 import com.example.framgia.imarketandroid.data.model.CategoryList;
 import com.example.framgia.imarketandroid.data.model.Session;
+import com.example.framgia.imarketandroid.data.model.Store;
+import com.example.framgia.imarketandroid.data.model.Stores;
 import com.example.framgia.imarketandroid.data.model.UserModel;
 import com.google.gson.Gson;
 
@@ -202,5 +204,25 @@ public class HttpRequest {
     public interface OnLoadDataListener {
         void onLoadDataSuccess(Object object);
         void onLoadDataFailure(String message);
+    }
+
+    public void getStore(int storeTypeId) {
+        mApi = mRetrofit.create(IMarketApiEndPoint.class);
+        Call<Stores> repuestServer = mApi.getStoreByStoreType(storeTypeId);
+        repuestServer.enqueue(new Callback<Stores>() {
+            @Override
+            public void onResponse(Call<Stores> call, Response<Stores> response) {
+                if (mListener != null) {
+                    mListener.onLoadDataSuccess(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Stores> call, Throwable t) {
+                if (mListener != null) {
+                    mListener.onLoadDataFailure(t.getMessage());
+                }
+            }
+        });
     }
 }

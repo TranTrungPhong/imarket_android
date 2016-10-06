@@ -241,9 +241,9 @@ public class FakeContainer {
 
     public static List<CustomMarker> getCustomMarker() {
         List<CustomMarker> list = new ArrayList<>();
-        Category category1 = new Category(STORE_TYPE_1, "Bakery Store");
-        Category category2 = new Category(STORE_TYPE_1, "Bakery Store");
-        Category category3 = new Category(STORE_TYPE_2, "Drug Store");
+        Category category1 = new Category(STORE_TYPE_1, "Bakery Store",1);
+        Category category2 = new Category(STORE_TYPE_1, "Bakery Store",1);
+        Category category3 = new Category(STORE_TYPE_2, "Drug Store",1);
         list.add(new CustomMarker(3, 21.007380, 105.793139, 5, category1));
         list.add(new CustomMarker(4, 21.007480, 105.793139, 10, category2));
         list.add(new CustomMarker(5, 21.007580, 105.793139, 15, category3));
