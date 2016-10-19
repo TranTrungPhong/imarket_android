@@ -14,7 +14,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +25,8 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,7 +49,6 @@ import com.example.framgia.imarketandroid.util.Constants;
 import com.example.framgia.imarketandroid.util.DialogShareUtil;
 import com.example.framgia.imarketandroid.util.Flog;
 import com.example.framgia.imarketandroid.util.SharedPreferencesUtil;
-import com.example.framgia.imarketandroid.util.SystemUtil;
 import com.example.framgia.imarketandroid.util.findpath.InternetUtil;
 import com.example.framgia.imarketandroid.util.findpath.LoadDataUtils;
 
@@ -62,8 +62,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class ChooseMarketActivity extends AppCompatActivity implements
     NavigationView.OnNavigationItemSelectedListener, View.OnClickListener,
-    SearchView.OnQueryTextListener, OnRecyclerItemInteractListener,
-    LoadDataUtils.OnLoadMarketsCallback {
+    SearchView.OnQueryTextListener, OnRecyclerItemInteractListener, TextWatcher {
     private RecyclerMarketAdapter mMarketAdapter;
     public static List<CommerceCanter> sMarkets = new ArrayList<>();
     private List<CommerceCanter> mTraceMarkets = new ArrayList<>();
@@ -86,10 +85,16 @@ public class ChooseMarketActivity extends AppCompatActivity implements
     private RelativeLayout mReFavorite, mReBound, mReFollow;
     private LinearLayoutCompat mAcibSearch;
     private RadioButton mRbName, mRbLocation;
-    private AppCompatAutoCompleteTextView mAcactvSearchInput;
+    private AutoCompleteTextView mAcactvSearchInput;
     private AppCompatTextView mActvNamePreview, mActvLocationPreview;
     private String[] mAutoCompleteList, mAutoCompleteNameList, mAutoCompleteLocationList;
     private ArrayAdapter<String> mAutoCompleteAdapter;
+    public static List<String> sListAutoSearchName = new ArrayList<>();
+    public static List<String> sListAutoSearchLocation = new ArrayList<>();
+    private Button mButtonSearch;
+    private String mCurrentTextSearchName, mCurrentTextSearchLocation;
+    private List<CommerceCanter> mListChooseCenter = new ArrayList<>();
+    private boolean mFlag = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,7 +105,6 @@ public class ChooseMarketActivity extends AppCompatActivity implements
         supportActionBar();
         setSearchSuggestionAdapter();
         initRececlerView();
-        InternetUtil.isInternetConnected(ChooseMarketActivity.this);
     }
 
     private void initRececlerView() {
@@ -231,18 +235,90 @@ public class ChooseMarketActivity extends AppCompatActivity implements
                 case R.id.image_avatar:
                     mLinearMenu.setVisibility(View.GONE);
                     break;
-                case R.id.acib_search_action:
-                    filterList(!mActvNamePreview.equals(""), !mActvLocationPreview.equals(""));
-                    break;
+//                case R.id.acib_search_action:
+//                    searchAction();
+//                    break;
                 case R.id.radio_name:
-                    mAcactvSearchInput.setText("");
-                    mAcactvSearchInput.setHint(getString(R.string.input_name));
-                    setAutoCompleteList(true);
+                    if (mAcactvSearchInput.getText() != null) {
+                        mCurrentTextSearchLocation = mAcactvSearchInput.getText().toString();
+                        mAcactvSearchInput.setHint(getString(R.string.input_name));
+                        mAcactvSearchInput.setText("");
+                    }
+                    mAcactvSearchInput.setAdapter(new ArrayAdapter<>(this,
+                        android.R.layout.simple_list_item_1,
+                        sListAutoSearchName));
+                    if (mCurrentTextSearchName != null && !mCurrentTextSearchName.equals("")) {
+                        mActvNamePreview.setText(mCurrentTextSearchName);
+                    }
+                    if (mCurrentTextSearchLocation != null && !mCurrentTextSearchLocation.equals("")) {
+                        mActvLocationPreview.setText(mCurrentTextSearchLocation);
+                        sListAutoSearchName.clear();
+                        for (int i = 0; i < sMarkets.size(); i++) {
+                            CommerceCanter center = sMarkets.get(i);
+                            if (center.getAddress().equalsIgnoreCase(mCurrentTextSearchLocation)) {
+                                sListAutoSearchName.add(center.getName());
+                            }
+                            mAcactvSearchInput.setHint(getString(R.string.input_location));
+                            mAcactvSearchInput.setAdapter(new ArrayAdapter<>(this,
+                                android.R.layout.simple_list_item_1,
+                                sListAutoSearchName));
+                        }
+                    } else {
+                        sListAutoSearchName.clear();
+                        for (int i = 0; i < sMarkets.size(); i++) {
+                            CommerceCanter center = sMarkets.get(i);
+                                sListAutoSearchName.add(center.getName());
+                            mAcactvSearchInput.setHint(getString(R.string.input_location));
+                            mAcactvSearchInput.setAdapter(new ArrayAdapter<>(this,
+                                android.R.layout.simple_list_item_1,
+                                sListAutoSearchName));
+                        }
+                    }
                     break;
                 case R.id.radio_location:
-                    mAcactvSearchInput.setText("");
-                    mAcactvSearchInput.setHint(getString(R.string.input_location));
-                    setAutoCompleteList(true);
+                    if (mAcactvSearchInput.getText() != null) {
+                        mCurrentTextSearchName = mAcactvSearchInput.getText().toString();
+                        mAcactvSearchInput.setText("");
+                    }
+                    if (mCurrentTextSearchLocation != null &&
+                        !mCurrentTextSearchLocation.equals("")) {
+                        mActvLocationPreview.setText(mCurrentTextSearchLocation);
+                    }
+                    if (mCurrentTextSearchName != null && !mCurrentTextSearchName.equals("")) {
+                        sListAutoSearchLocation.clear();
+                        for (int i = 0; i < sMarkets.size(); i++) {
+                            CommerceCanter center = sMarkets.get(i);
+                            if (center.getName().equalsIgnoreCase(mCurrentTextSearchName)) {
+                                sListAutoSearchLocation.add(center.getAddress());
+                            }
+                            mAcactvSearchInput.setHint(getString(R.string.input_location));
+                            mAcactvSearchInput.setAdapter(new ArrayAdapter<>(this,
+                                android.R.layout.simple_list_item_1,
+                                sListAutoSearchLocation));
+                        }
+                        mActvNamePreview.setText(mCurrentTextSearchName);
+                    } else {
+                        sListAutoSearchLocation.clear();
+                        for (int i = 0; i < sMarkets.size(); i++) {
+                            CommerceCanter center = sMarkets.get(i);
+                            if (center.getName().equalsIgnoreCase(mCurrentTextSearchName)) {
+                                sListAutoSearchLocation.add(center.getAddress());
+                            }
+                            mAcactvSearchInput.setHint(getString(R.string.input_location));
+                            mAcactvSearchInput.setAdapter(new ArrayAdapter<>(this,
+                                android.R.layout.simple_list_item_1,
+                                sListAutoSearchLocation));
+                        }
+                    }
+                    break;
+                case R.id.img_button_search:
+                    clickSearch();
+                    break;
+                case R.id.actv_search_input:
+                    mAcactvSearchInput.setAdapter(new ArrayAdapter<>(this,
+                        android.R.layout.simple_list_item_1,
+                        sListAutoSearchName));
+                    initDataAutoCompleteTextView();
                     break;
                 default:
                     break;
@@ -251,43 +327,42 @@ public class ChooseMarketActivity extends AppCompatActivity implements
             Flog.toast(this, R.string.no_internet);
         }
     }
-
-    private void filterList(boolean byName, boolean byLocation) {
-        List<CommerceCanter> tempMarkets = new ArrayList<>();
-        if (byName && byLocation) {
-            for (int i = mTraceMarkets.size() - 1; i >= 0; i--) {
-                if (SystemUtil.deAccent(mTraceMarkets.get(i).getName().trim().toLowerCase())
-                    .contains(SystemUtil
-                        .deAccent(mActvNamePreview.getText().toString().trim().toLowerCase()))
-                    && SystemUtil.deAccent(mTraceMarkets.get(i).getAddress().trim().toLowerCase())
-                    .contains(SystemUtil.deAccent(
-                        mActvLocationPreview.getText().toString().trim().toLowerCase()))) {
-                    tempMarkets.add(mTraceMarkets.get(i));
-                }
-            }
-        } else if (!byName && byLocation) {
-            for (int i = mTraceMarkets.size() - 1; i >= 0; i--) {
-                if (SystemUtil.deAccent(mTraceMarkets.get(i).getAddress().trim().toLowerCase())
-                    .contains(SystemUtil.deAccent(
-                        mActvLocationPreview.getText().toString().trim().toLowerCase()))) {
-                    tempMarkets.add(mTraceMarkets.get(i));
-                }
-            }
-        } else if (byName && !byLocation) {
-            for (int i = mTraceMarkets.size() - 1; i >= 0; i--) {
-                if (SystemUtil.deAccent(mTraceMarkets.get(i).getName().trim().toLowerCase())
-                    .contains(SystemUtil
-                        .deAccent(mActvNamePreview.getText().toString().trim().toLowerCase()))) {
-                    tempMarkets.add(mTraceMarkets.get(i));
-                }
-            }
-        } else {
-            tempMarkets.addAll(mTraceMarkets);
-        }
-        sMarkets.clear();
-        sMarkets.addAll(tempMarkets);
-        mMarketAdapter.notifyDataSetChanged();
-    }
+//    private void filterList(boolean byName, boolean byLocation) {
+//        List<CommerceCanter> tempMarkets = new ArrayList<>();
+//        if (byName && byLocation) {
+//            for (int i = mTraceMarkets.size() - 1; i >= 0; i--) {
+//                if (SystemUtil.deAccent(mTraceMarkets.get(i).getName().trim().toLowerCase())
+//                    .contains(SystemUtil
+//                        .deAccent(mActvNamePreview.getText().toString().trim().toLowerCase()))
+//                    && SystemUtil.deAccent(mTraceMarkets.get(i).getAddress().trim().toLowerCase())
+//                    .contains(SystemUtil.deAccent(
+//                        mActvLocationPreview.getText().toString().trim().toLowerCase()))) {
+//                    tempMarkets.add(mTraceMarkets.get(i));
+//                }
+//            }
+//        } else if (!byName && byLocation) {
+//            for (int i = mTraceMarkets.size() - 1; i >= 0; i--) {
+//                if (SystemUtil.deAccent(mTraceMarkets.get(i).getAddress().trim().toLowerCase())
+//                    .contains(SystemUtil.deAccent(
+//                        mActvLocationPreview.getText().toString().trim().toLowerCase()))) {
+//                    tempMarkets.add(mTraceMarkets.get(i));
+//                }
+//            }
+//        } else if (byName && !byLocation) {
+//            for (int i = mTraceMarkets.size() - 1; i >= 0; i--) {
+//                if (SystemUtil.deAccent(mTraceMarkets.get(i).getName().trim().toLowerCase())
+//                    .contains(SystemUtil
+//                        .deAccent(mActvNamePreview.getText().toString().trim().toLowerCase()))) {
+//                    tempMarkets.add(mTraceMarkets.get(i));
+//                }
+//            }
+//        } else {
+//            tempMarkets.addAll(mTraceMarkets);
+//        }
+//        sMarkets.clear();
+//        sMarkets.addAll(tempMarkets);
+//        mMarketAdapter.notifyDataSetChanged();
+//    }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -328,36 +403,38 @@ public class ChooseMarketActivity extends AppCompatActivity implements
         mRbName.setOnClickListener(this);
         mRbLocation = (RadioButton) findViewById(R.id.radio_location);
         mRbLocation.setOnClickListener(this);
-        mAcactvSearchInput = (AppCompatAutoCompleteTextView) findViewById(R.id.actv_search_input);
+        mAcactvSearchInput = (AutoCompleteTextView) findViewById(R.id.actv_search_input);
         mAcactvSearchInput.setHint(getString(R.string.input_name));
         mActvNamePreview = (AppCompatTextView) findViewById(R.id.actv_preview_name_market);
         mActvLocationPreview = (AppCompatTextView) findViewById(R.id.actv_preview_place_market);
+        mAcactvSearchInput.addTextChangedListener(this);
+        mButtonSearch = (Button) findViewById(R.id.img_button_search);
+        mButtonSearch.setOnClickListener(this);
+        mAcactvSearchInput.setOnClickListener(this);
     }
-
-    private void initAutoCompleteList() {
-        int len = sMarkets.size();
-        mAutoCompleteList = new String[len];
-        mAutoCompleteNameList = new String[len];
-        mAutoCompleteLocationList = new String[len];
-        for (int i = 0; i < len; i++) {
-            CommerceCanter commerceCanter = sMarkets.get(i);
-            mAutoCompleteNameList[i] = commerceCanter.getName();
-            mAutoCompleteLocationList[i] = commerceCanter.getAddress();
-        }
-    }
-
-    private void setAutoCompleteList(boolean notifyChanged) {
-        if (mRbName.isChecked()) {
-            mAutoCompleteList = mAutoCompleteNameList;
-        } else {
-            mAutoCompleteList = mAutoCompleteLocationList;
-        }
-        int layoutItemId = android.R.layout.simple_dropdown_item_1line;
-        mAutoCompleteAdapter = new ArrayAdapter<>(this, layoutItemId, mAutoCompleteList);
-        mAcactvSearchInput.setAdapter(mAutoCompleteAdapter);
-        if (notifyChanged)
-            mAutoCompleteAdapter.notifyDataSetChanged();
-    }
+//    private void initAutoCompleteList() {
+//        int len = sMarkets.size();
+//        mAutoCompleteList = new String[len];
+//        mAutoCompleteNameList = new String[len];
+//        mAutoCompleteLocationList = new String[len];
+//        for (int i = 0; i < len; i++) {
+//            CommerceCanter commerceCanter = sMarkets.get(i);
+//            mAutoCompleteNameList[i] = commerceCanter.getName();
+//            mAutoCompleteLocationList[i] = commerceCanter.getAddress();
+//        }
+//    }
+//    private void setAutoCompleteList(boolean notifyChanged) {
+//        if (mRbName.isChecked()) {
+//            mAutoCompleteList = mAutoCompleteNameList;
+//        } else {
+//            mAutoCompleteList = mAutoCompleteLocationList;
+//        }
+//        int layoutItemId = android.R.layout.simple_dropdown_item_1line;
+//        mAutoCompleteAdapter = new ArrayAdapter<>(this, layoutItemId, mAutoCompleteList);
+//        mAcactvSearchInput.setAdapter(mAutoCompleteAdapter);
+//        if (notifyChanged)
+//            mAutoCompleteAdapter.notifyDataSetChanged();
+//    }
 
     private void setListeners() {
         findViewById(R.id.button_favorite).setOnClickListener(this);
@@ -457,7 +534,9 @@ public class ChooseMarketActivity extends AppCompatActivity implements
                 break;
             case R.id.item_recycler_market:
                 mLinearMenu.setVisibility(View.GONE);
-                startActivity(new Intent(this, FloorActivity.class));
+                Intent intent = new Intent(this, FloorActivity.class);
+                intent.putExtra(Constants.COMMERCE_INTENT, sMarkets.get(position));
+                startActivity(intent);
                 break;
         }
     }
@@ -467,50 +546,111 @@ public class ChooseMarketActivity extends AppCompatActivity implements
         mRecyclerDrawerAdapter = new RecyclerDrawerAdapter(this, mDrawerItems);
         mRecyclerDrawer.setAdapter(mRecyclerDrawerAdapter);
     }
-
-    @Override
-    public void onLoadMarketsDone(List<CommerceCanter> commerceList) {
-        if (commerceList.size() <= 0)
-            return;
-        sMarkets.clear();
-        mTraceMarkets.clear();
-        int size = commerceList.size();
-        for (int i = 0; i < size; i++) {
-            CommerceCanter commerceCanter = commerceList.get(i);
-            sMarkets.add(commerceCanter);
-        }
-        mTraceMarkets.addAll(sMarkets);
-        mMarketAdapter.notifyDataSetChanged();
-        setCompleteEvent();
-    }
-
-    private void setCompleteEvent() {
-        initAutoCompleteList();
-        setAutoCompleteList(false);
-        mAcactvSearchInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                setAutoCompleteList(true);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (mRbName.isChecked()) {
-                    mActvNamePreview.setText(s);
-                } else {
-                    mActvLocationPreview.setText(s);
-                }
-            }
-        });
-    }
+//    @Override
+//    public void onLoadMarketsDone(List<CommerceCanter> commerceList) {
+//        if (commerceList.size() <= 0)
+//            return;
+//        sMarkets.clear();
+//        mTraceMarkets.clear();
+//        int size = commerceList.size();
+//        for (int i = 0; i < size; i++) {
+//            CommerceCanter commerceCanter = commerceList.get(i);
+//            sMarkets.add(commerceCanter);
+//        }
+//        mTraceMarkets.addAll(sMarkets);
+//        mMarketAdapter.notifyDataSetChanged();
+////        setCompleteEvent();
+//    }
+//    private void setCompleteEvent() {
+//        initAutoCompleteList();
+////        setAutoCompleteList(false);
+//        mAcactvSearchInput.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+////                setAutoCompleteList(true);
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if (mRbName.isChecked()) {
+//                    mActvNamePreview.setText(s);
+//                } else {
+//                    mActvLocationPreview.setText(s);
+//                }
+//            }
+//        });
+//    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(LoadDataUtils.mReceiver);
+        if (LoadDataUtils.mReceiver != null) {
+            unregisterReceiver(LoadDataUtils.mReceiver);
+        }
+    }
+
+    public static void initDataAutoCompleteTextView() {
+        sListAutoSearchName.clear();
+        sListAutoSearchLocation.clear();
+        if (sMarkets == null || sMarkets.size() == 0) {
+            sListAutoSearchName.add(Constants.COM_NAME);
+            sListAutoSearchLocation.add(Constants.COM_LOCATION);
+        } else {
+            for (CommerceCanter center : sMarkets) {
+                sListAutoSearchName.add(center.getName());
+                sListAutoSearchLocation.add(center.getAddress());
+            }
+        }
+//        mAutoCompleteAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        if (!s.equals("") && !mFlag) {
+//            Flog.toast(this,"show");
+            mAcactvSearchInput.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1,
+                sListAutoSearchName));
+            initDataAutoCompleteTextView();
+            mFlag = true;
+        }
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+    }
+
+    private void clickSearch() {
+        String textSearch = mAcactvSearchInput.getText().toString();
+        if (!textSearch.equals("")) {
+            if (mRbName.isChecked()) {
+                mActvNamePreview.setText(textSearch);
+            } else {
+                mActvLocationPreview.setText(textSearch);
+            }
+            mListChooseCenter.clear();
+            String name = mActvNamePreview.getText().toString();
+            String address = mActvLocationPreview.getText().toString();
+            for (CommerceCanter center : sMarkets) {
+                if (center.getName().equals(name) || center.getAddress().equals(address)) {
+                    mListChooseCenter.add(center);
+                }
+            }
+            mMarketAdapter = new RecyclerMarketAdapter(this, mListChooseCenter);
+            mRecyclerMarket.setAdapter(mMarketAdapter);
+            mMarketAdapter.notifyDataSetChanged();
+        } else {
+            mMarketAdapter = new RecyclerMarketAdapter(this, sMarkets);
+            mRecyclerMarket.setAdapter(mMarketAdapter);
+            mMarketAdapter.notifyDataSetChanged();
+        }
     }
 }

@@ -47,9 +47,10 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <android.support.v7.widget.AppCompatAutoCompleteTextView
+                            <AutoCompleteTextView
                                 android:id="@+id/actv_search_input"
                                 android:layout_width="0dp"
+                                android:completionThreshold="1"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1" />
 
@@ -62,11 +63,11 @@
                                 android:gravity="center"
                                 android:orientation="vertical">
 
-                                <ImageView
+                                <Button
+                                    android:id="@+id/img_button_search"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="@android:color/transparent"
-                                    android:src="@drawable/places_ic_search" />
+                                    android:background="@drawable/places_ic_search" />
                             </android.support.v7.widget.LinearLayoutCompat>
                         </LinearLayout>
 
@@ -87,7 +88,7 @@
                                     android:layout_weight="2"
                                     android:orientation="vertical">
 
-                                    <android.support.v7.widget.AppCompatTextView
+                                    <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:elevation="@dimen/common_size_2"
@@ -95,13 +96,14 @@
                                         android:textSize="@dimen/text_small_size"
                                         android:textColor="@color/pink_500"/>
 
-                                    <android.support.v7.widget.AppCompatTextView
+                                    <TextView
                                         android:id="@+id/actv_preview_name_market"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="@dimen/margin_20dp"
                                         android:layout_marginRight="@dimen/margin_20dp"
                                         android:elevation="@dimen/common_size_2"
+                                        android:singleLine="true"
                                         android:textSize="@dimen/text_medium_size"
                                         android:layout_marginTop="@dimen/margin_10dp"/>
                                 </LinearLayout>
@@ -112,7 +114,7 @@
                                     android:layout_weight="3"
                                     android:orientation="vertical">
 
-                                    <android.support.v7.widget.AppCompatTextView
+                                    <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:elevation="@dimen/common_size_2"
@@ -120,13 +122,14 @@
                                         android:textSize="@dimen/text_small_size"
                                         android:textColor="@color/pink_500"/>
 
-                                    <android.support.v7.widget.AppCompatTextView
+                                    <TextView
                                         android:id="@+id/actv_preview_place_market"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="@dimen/margin_20dp"
                                         android:layout_marginRight="@dimen/margin_20dp"
                                         android:elevation="@dimen/common_size_2"
+                                        android:singleLine="true"
                                         android:textSize="@dimen/text_medium_size"
                                         android:layout_marginTop="@dimen/margin_10dp"/>
                                 </LinearLayout>

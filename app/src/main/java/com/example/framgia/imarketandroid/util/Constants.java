@@ -114,4 +114,6 @@ public class Constants {
     public static final int NUMBER_OF_STARS = 5;
     public static final int LIMIT_STAR = 5;
     public static final String INTERNET_FILTER = "android.net.conn.CONNECTIVITY_CHANGE";
+    public static final String COM_NAME = "Commerce center name .";
+    public static final String COM_LOCATION = "Commerce center location .";
 }

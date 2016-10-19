@@ -98,13 +98,14 @@ public class LoadDataUtils {
                 mProgressDialog.dismiss();
                 CommerceList commerceList = (CommerceList) object;
                 if (commerceList != null) {
-                    Flog.toast(mContext, R.string.data_success);
+//                    Flog.toast(mContext, R.string.data_success);
                     ChooseMarketActivity.sMarkets.clear();
                     int size = commerceList.getCenterList().size();
                     for (int i = 0; i < size; i++) {
                         CommerceCanter commerceCanter = commerceList.getCenterList().get(i);
                         ChooseMarketActivity.sMarkets.add(commerceCanter);
                     }
+                    ChooseMarketActivity.initDataAutoCompleteTextView();
                 } else {
                     Flog.toast(mContext, R.string.not_data_in_object);
                 }
