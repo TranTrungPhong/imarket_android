@@ -605,13 +605,11 @@ public class ChooseMarketActivity extends AppCompatActivity implements
                 sListAutoSearchLocation.add(center.getAddress());
             }
         }
-//        mAutoCompleteAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         if (!s.equals("") && !mFlag) {
-//            Flog.toast(this,"show");
             mAcactvSearchInput.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
                 sListAutoSearchName));
