@@ -107,7 +107,7 @@ public class LoadDataUtils {
                         ChooseMarketActivity.sMarkets.add(commerceCanter);
                     }
                     ChooseMarketActivity.initDataAutoCompleteTextView();
-                    ChooseMarketActivity.cacheCommerce(context);
+//                    ChooseMarketActivity.cacheCommerce(context);
                     ChooseMarketActivity.sFlagCacheCommerce = true;
                 } else {
                     Flog.toast(mContext, R.string.not_data_in_object);

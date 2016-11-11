@@ -57,7 +57,10 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"/>
         <activity android:name=".ui.activity.ChooseMarketActivity">
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".ui.activity.LoginActivity"/>
         <activity android:name=".util.findpath.DrawPathActivity"/>
@@ -91,10 +94,6 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog"/>
         <activity android:name=".ui.activity.IntroduceActivity"/>
         <activity android:name=".ui.activity.HomeStoreActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity android:name=".ui.activity.ReadmoreActivity"/>
         <activity
