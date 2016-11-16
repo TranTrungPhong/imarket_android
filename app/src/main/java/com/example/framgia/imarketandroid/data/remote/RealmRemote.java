@@ -31,21 +31,6 @@ public class RealmRemote {
     private static Realm mRealm = Realm.getDefaultInstance();
     private static final int SCHEMA_VERSION = 3;
 
-    public static void openDatabaseRealm(Context context, InputStream inputStream, String
-        outFileName) {
-        copyBundledRealmFile(context, inputStream, outFileName);
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(context)
-            .name(outFileName)
-            .schemaVersion(SCHEMA_VERSION)
-            .build();
-        try {
-            Realm.migrateRealm(realmConfiguration, new Migration());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        mRealm.getInstance(realmConfiguration);
-    }
-
     public static RealmResults<Point> getAllPoint() {
         return mRealm.where(Point.class).findAll();
     }

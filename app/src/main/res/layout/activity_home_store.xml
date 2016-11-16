@@ -45,7 +45,7 @@
             android:id="@+id/fab_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_chat"
+            android:src="@drawable/ic_phone"
             fab:fab_colorNormal="@color/white"
             fab:fab_colorPressed="@android:color/white"
             fab:fab_size="normal"/>
